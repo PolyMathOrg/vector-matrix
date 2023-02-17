@@ -1,5 +1,11 @@
-name: CI matrix
 
+name: CI
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the development branch
 on:
   push:
     branches:
@@ -7,27 +13,20 @@ on:
   pull_request:
     types: [assigned, opened, synchronize, reopened]
 
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_NAME: Pharo-AI-${{ matrix.smalltalk }}
     strategy:
       matrix:
-        os: [ macos-latest, windows-latest, ubuntu-latest]
-        smalltalk: [ Pharo64-9.0, Pharo64-10, Pharo64-11]
-    runs-on: ${{ matrix.os }}
-    name: ${{ matrix.smalltalk }} on ${{ matrix.os }}
+        smalltalk: [ Pharo64-9.0, Pharo64-10, Pharo64-11 ]
+    name: ${{ matrix.smalltalk }}
     steps:
       - uses: actions/checkout@v2
-      - name: Setup smalltalkCI
-        uses: hpi-swa/setup-smalltalkCI@v1
+      - uses: hpi-swa/setup-smalltalkCI@v1
         with:
-          smalltalk-image: ${{ matrix.smalltalk }}
-      - name: Load Image and Run Tests
-        run: smalltalkci -s ${{ matrix.smalltalk }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          smalltalk-version: ${{ matrix.smalltalk }}
+      - run: smalltalkci -s ${{ matrix.smalltalk }}
+        shell: bash
         timeout-minutes: 15
