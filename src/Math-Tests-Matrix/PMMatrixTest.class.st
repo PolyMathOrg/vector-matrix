@@ -253,18 +253,6 @@ PMMatrixTest >> testInverseSingularMatrixError [
 ]
 
 { #category : #tests }
-PMMatrixTest >> testIsRealOnComplexMatrix [
-	| matrix |
-	
-	matrix := PMMatrix rows: { 
-		{ 1 . 3 + 4i . 0 } .
-		{ 1 - 2i . 2 . -4 } .
-		{ -8 + 0i . 5 . -1 } }.
-	
-	self deny: matrix isReal.
-]
-
-{ #category : #tests }
 PMMatrixTest >> testIsRealOnRealMatrix [
 	| matrix |
 	
@@ -316,15 +304,16 @@ PMMatrixTest >> testLinearEquations [
 
 { #category : #tests }
 PMMatrixTest >> testLinearEquationsSingle [
+
 	| s sol |
 	s := PMLinearEquationSystem
-		equations: #(#(1 2 0) #(3 5 4) #(5 6 3))
-		constant: #(0.1 12.5 10.3).
+		     equations: #( #( 1 2 0 ) #( 3 5 4 ) #( 5 6 3 ) )
+		     constant: #( 0.1 12.5 10.3 ).
 	sol := s solution.
 	self assert: sol size equals: 3.
-	self assert: ((sol at: 1) equalsTo: 0.5).
-	self assert: ((sol at: 2) equalsTo: -0.2).
-	self assert: ((sol at: 3) equalsTo: 3.0)
+	self assert: ((sol at: 1) closeTo: 0.5).
+	self assert: ((sol at: 2) closeTo: -0.2).
+	self assert: ((sol at: 3) closeTo: 3.0)
 ]
 
 { #category : #'linear algebra' }
@@ -380,6 +369,18 @@ PMMatrixTest >> testMatrixCloseToPrecision [
 	self assert: (a closeTo: b precision: 1.0).
 	self deny: (a closeTo: b precision: 0.6).
 	self deny: (a closeTo: b precision: 0.2)
+]
+
+{ #category : #tests }
+PMMatrixTest >> testMatrixConversionWithBothDims [
+
+	| vect result expected |
+	vect := #( 1 0.5 0.2 3 1 -1 7 3 2 12 13 3 ) asPMVector.
+	result := vect reshapeWithDimensions: #( 6 2 ).
+
+	expected := PMMatrix rows: #( #( 1 0.5 ) #( 0.2 3 ) #( 1 -1 ) #( 7 3 ) #( 2 12 ) #( 13 3 ) ).
+
+	self assert: result equals: expected
 ]
 
 { #category : #comparing }
@@ -651,6 +652,41 @@ PMMatrixTest >> testMatrixTrace [
 	self assert: a tr equals: 15
 ]
 
+{ #category : #'linear algebra' }
+PMMatrixTest >> testMinorsOfNonSquareMatrix [
+
+	| matrix expected |
+	matrix := PMMatrix rows: { 
+			          { 1. 2 }.
+			          { 6. 7 }.
+			          { 5. 4 } }.
+
+	expected := PMMatrix rows: { 
+			            { 7 }.
+			            { 4 } }.
+	self assert: (matrix minor: 0 and: 0) equals: matrix.
+	self assert: (matrix minor: 1 and: 1) equals: expected
+]
+
+{ #category : #'linear algebra' }
+PMMatrixTest >> testMinorsOfSquareMatrix [
+
+	| matrix expected |
+	matrix := PMMatrix rows: { 
+			          { 1. 2. 3 }.
+			          { 6. 7. 8 }.
+			          { 5. 4. 1 } }.
+
+	expected := PMMatrix rows: { 
+			            { 7. 8 }.
+			            { 4. 1 } }.
+	self assert: (matrix minor: 0 and: 0) equals: matrix.
+	self assert: (matrix minor: 1 and: 1) equals: expected.
+	self
+		assert: (matrix minor: 2 and: 2)
+		equals: (PMMatrix rows: { { 1 } })
+]
+
 { #category : #tests }
 PMMatrixTest >> testOnesMatrix [
 	| a |
@@ -894,7 +930,7 @@ PMMatrixTest >> testSymmetricMatrixAdd3 [
 	self assert: ((c rowAt: 3) at: 1) equals: 31
 ]
 
-{ #category : #test }
+{ #category : #tests }
 PMMatrixTest >> testTake [
 
 	| m expected |
@@ -929,6 +965,18 @@ PMMatrixTest >> testVectorMatrixOperation [
 	self assert: v size equals: 2.
 	self assert: (v at: 1) equals: 4.
 	self assert: (v at: 2) equals: 4
+]
+
+{ #category : #tests }
+PMMatrixTest >> testVectorToVectorConversion [
+
+	| vect result expected |
+	vect := #( 1 0.5 0.2 3 1 -1 7 3 2 12 13 3 ) asPMVector.
+	result := vect reshapeWithDimensions: #( 1 12 ).
+
+	expected := PMMatrix rows: #( #( 1 0.5 0.2 3 1 -1 7 3 2 12 13 3 ) ).
+
+	self assert: result equals: expected
 ]
 
 { #category : #'linear algebra' }

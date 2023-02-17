@@ -85,20 +85,6 @@ PMVectorTest >> testHouseholder [
 ]
 
 { #category : #tests }
-PMVectorTest >> testIsRealOnComplexVector [
-	| vector |
-	vector := { 1 . 4 . -2 . 0.5 + 3i } asPMVector.
-	self deny: vector isReal.
-]
-
-{ #category : #tests }
-PMVectorTest >> testIsRealOnRealVector [
-	| vector |
-	vector := #(1 4 -2 0.5) asPMVector.
-	self assert: vector isReal.
-]
-
-{ #category : #tests }
 PMVectorTest >> testLessThan [
 	| vec vecCopy |
 	vec := #(1 2 3) asPMVector.
@@ -106,17 +92,6 @@ PMVectorTest >> testLessThan [
 	self assert: (vec < 1.5) equals: #(true false false) asPMVector.
 	"Ensure that in-place modification does not take place"
 	self assert: vec equals: vecCopy asPMVector.
-]
-
-{ #category : #tests }
-PMVectorTest >> testMatrixConversionWithBothDims [
-	| vect result expected |
-	vect := #(1 0.5 0.2 3 1 -1 7 3 2 12 13 3) asPMVector .
-	result := vect reshapeWithDimensions: #(6 2).
-	
-	expected := PMMatrix rows: #(#(1 0.5) #(0.2 3) #(1 -1) #(7 3) #(2 12) #(13 3)).
-	
-	self assert: result equals: expected.
 ]
 
 { #category : #tests }
@@ -295,14 +270,15 @@ PMVectorTest >> testVectorNegate [
 
 { #category : #tests }
 PMVectorTest >> testVectorNorm [
+
 	| v1 v2 |
-	v1 := #(1 0) asPMVector.
+	v1 := #( 1 0 ) asPMVector.
 	self assert: v1 norm equals: 1.
-	v2 := #(0 1) asPMVector.
+	v2 := #( 0 1 ) asPMVector.
 	self assert: v2 norm equals: 1.
 	self shouldnt: [ (v1 + v2) norm = 1 ].
 	"normalized norm may differ from exactly one due to floating point operations"
-	self assert: ((v1 + v2) normalized norm equalsTo: 1)
+	self assert: ((v1 + v2) normalized norm closeTo: 1)
 ]
 
 { #category : #tests }
@@ -372,17 +348,6 @@ PMVectorTest >> testVectorSum [
 	| u |
 	u := #(1 2 3) asPMVector.
 	self assert: (u sum) equals: 6.
-]
-
-{ #category : #tests }
-PMVectorTest >> testVectorToVectorConversion [
-	| vect result expected |
-	vect := #(1 0.5 0.2 3 1 -1 7 3 2 12 13 3) asPMVector .
-	result := vect reshapeWithDimensions: #(1 12).
-	
-	expected := PMMatrix rows: #(#(1 0.5 0.2 3 1 -1 7 3 2 12 13 3)).
-	
-	self assert: result equals: expected.
 ]
 
 { #category : #tests }
