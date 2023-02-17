@@ -1,6 +1,6 @@
 Extension { #name : #ArrayedCollection }
 
-{ #category : #'*Math-Core' }
+{ #category : #'*Math-Vector' }
 ArrayedCollection >> addWithVector: aVector [
 	"Answers the sum of the receiver with aVector."
 	| answer n |

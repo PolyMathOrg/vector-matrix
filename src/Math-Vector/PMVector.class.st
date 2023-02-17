@@ -20,7 +20,7 @@ Class {
 	#name : #PMVector,
 	#superclass : #Array,
 	#type : #variable,
-	#category : #'Math-Core'
+	#category : #'Math-Vector'
 }
 
 { #category : #'instance creation' }
@@ -130,7 +130,7 @@ PMVector >> asPMVector [
 	^ self
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #testing }
 PMVector >> checkDimensionalCompatibility: dimensionArray [
 	|prod|
 	prod := 1.

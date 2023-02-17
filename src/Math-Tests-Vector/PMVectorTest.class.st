@@ -1,7 +1,7 @@
 Class {
 	#name : #PMVectorTest,
 	#superclass : #TestCase,
-	#category : #'Math-Tests-Core'
+	#category : #'Math-Tests-Vector'
 }
 
 { #category : #tests }

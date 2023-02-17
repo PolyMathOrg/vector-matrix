@@ -1,6 +1,6 @@
 Extension { #name : #Collection }
 
-{ #category : #'*Math-Core' }
+{ #category : #'*Math-Vector' }
 Collection >> asPMVector [
 	
 	| aVector index |
