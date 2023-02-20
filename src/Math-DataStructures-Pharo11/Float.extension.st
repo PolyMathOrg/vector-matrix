@@ -1,6 +1,6 @@
 Extension { #name : #Float }
 
-{ #category : #'*Math-DataStractures-Pharo11' }
+{ #category : #'*Math-DataStructures-Pharo11' }
 Float class >> machineEpsilon [
 
 	^ self epsilon
