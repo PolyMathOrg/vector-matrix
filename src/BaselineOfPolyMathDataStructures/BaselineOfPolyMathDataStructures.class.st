@@ -17,5 +17,10 @@ BaselineOfPolyMathDataStructures >> baseline: spec [
 
 		spec
 			group: 'Core' with: #( 'Math-Vector' 'Math-Matrix' );
-			group: 'Tests' with: #( 'Math-Tests-Vector' 'Math-Tests-Matrix' ) ]
+			group: 'Tests' with: #( 'Math-Tests-Vector' 'Math-Tests-Matrix' ) ].
+
+	spec for: #( #'pharo9.x' #'pharo10.x' ) do: [ 
+		spec
+			package: 'Math-Matrix' with: [ spec requires: #( 'Math-DataStructures-Pharo11' ) ];
+			package: 'Math-DataStructures-Pharo11' ]
 ]
