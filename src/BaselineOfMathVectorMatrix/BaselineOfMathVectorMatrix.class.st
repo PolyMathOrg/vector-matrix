@@ -1,11 +1,11 @@
 Class {
-	#name : #BaselineOfPolyMathDataStructures,
+	#name : #BaselineOfMathVectorMatrix,
 	#superclass : #BaselineOf,
-	#category : #BaselineOfPolyMathDataStructures
+	#category : #BaselineOfMathVectorMatrix
 }
 
 { #category : #baselines }
-BaselineOfPolyMathDataStructures >> baseline: spec [
+BaselineOfMathVectorMatrix >> baseline: spec [
 
 	<baseline>
 	spec for: #common do: [ "Packages"
