@@ -1,7 +1,7 @@
 Class {
 	#name : #PMRestTest,
 	#superclass : #TestCase,
-	#category : #'Math-Tests-Matrix'
+	#category : #'Math-Matrix-Tests'
 }
 
 { #category : #tests }
