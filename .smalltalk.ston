@@ -1,16 +1,14 @@
 SmalltalkCISpec {
   #loading : [
     SCIMetacelloLoadSpec {
-      #baseline : 'PolyMathDataStructures',
-      #directory : 'src',
-      #platforms : [ #pharo ]
+      #baseline : 'MathVectorMatrix',
+      #directory : 'src'
     }
   ],
   #testing : {
     #coverage : {
       #packages : [
-	      'Math-Core*',
-	      'Math-Matrix*' ]
+	      'Math-*' ]
     }
   }
 }
