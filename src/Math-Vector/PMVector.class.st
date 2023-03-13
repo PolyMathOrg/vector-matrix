@@ -24,15 +24,17 @@ Class {
 }
 
 { #category : #'instance creation' }
-PMVector class >> new: size random: maxRandomNumber [ 
+PMVector class >> new: size random: maxRandomNumber [
+
+	^ self new: size random: maxRandomNumber generator: Random new
+]
+
+{ #category : #'instance creation' }
+PMVector class >> new: size random: maxRandomNumber generator: generator [
 	"Answer an instance of me, with number of elements equal to size, each 
 	a randomNumber lower than maxRandomNumber ."
-	
-	| random |
-	random := Random new.
 
-	^ self newFrom: ((1 to: size ) collect: [ :each |
-		random nextBetween: 0 and: maxRandomNumber ]).
+	^ self newFrom: ((1 to: size) collect: [ :each | generator nextBetween: 0 and: maxRandomNumber ])
 ]
 
 { #category : #private }

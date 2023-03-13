@@ -98,25 +98,29 @@ PMQRTest >> testMoorePenroseInverseOfNonRandomMatrix [
 
 { #category : #tests }
 PMQRTest >> testMoorePenroseInverseOfProductOfMatrices [
+
 	| a inverse |
-	a := PMMatrix new initializeRows:
-		     #( #( 5 40 1 ) #( 0 0 1 ) #( 0 0 1 ) ).
-	
-	a := a * (PMMatrix rows: 3 columns: 3 random: 5.0).
-	inverse := a mpInverse .
-	self assert: inverse isMoorePenroseInverseOf: a.
+	a := PMMatrix new initializeRows: #( #( 5 40 1 ) #( 0 0 1 ) #( 0 0 1 ) ).
+
+	a := a * (PMMatrix
+		      rows: 3
+		      columns: 3
+		      random: 5.0
+		      generator: (Random seed: 42)).
+	inverse := a mpInverse.
+	self assert: inverse isMoorePenroseInverseOf: a
 ]
 
 { #category : #tests }
 PMQRTest >> testMoorePenroseInverseOfRandomMatrixIsAnInverse [
-"
+	"
 Proofs for the properties below can be found in literature:
 If A has real entries, then so does A+
 If A is invertible, its pseudoinverse is its inverse. That is, A+ = A**−1
 "
 
 	| a |
-	a := PMSymmetricMatrix new: 4 random: 1.0.
+	a := PMSymmetricMatrix new: 4 random: 1.0 generator: (Random seed: 42).
 	self assert: (a mpInverse closeTo: a inverse)
 ]
 
@@ -125,9 +129,13 @@ PMQRTest >> testOrthogonalize [
 
 	| a b i |
 	i := 0.
-	[ 
-	a := PMMatrix rows: 5 columns: 5 random: 5.0.
-	a rank = 5 ifTrue: [ 
+	[
+	a := PMMatrix
+		     rows: 5
+		     columns: 5
+		     random: 5.0
+		     generator: (Random seed: 42).
+	a rank = 5 ifTrue: [
 		a atRow: 2 put: (a rowAt: 1) + (3 * (a rowAt: 3)).
 		a atRow: 4 put: 3.11 * (a rowAt: 2).
 		b := a orthogonalize.
@@ -146,60 +154,55 @@ PMQRTest >> testOrthogonalize [
 PMQRTest >> testQRFactorization [
 
 	| a qr |
-	5 timesRepeat: [ 
-		a := PMMatrix rows: 5 columns: 4 random: 10.0.
+	5 timesRepeat: [
+		a := PMMatrix
+			     rows: 5
+			     columns: 4
+			     random: 10.0
+			     generator: (Random seed: 42).
 		qr := a qrFactorization.
 		self assert: (a closeTo: qr first * qr second).
-		self assert: (qr first squared closeTo:
-				 (PMSymmetricMatrix identity: qr first numberOfColumns)).
-		2 to: qr second numberOfRows do: [ :r | 
-			self assert: (((qr second rowAt: r) first: r - 1) closeTo:
-					 (Array new: r - 1 withAll: 0)) ].
+		self assert: (qr first squared closeTo: (PMSymmetricMatrix identity: qr first numberOfColumns)).
+		2 to: qr second numberOfRows do: [ :r | self assert: (((qr second rowAt: r) first: r - 1) closeTo: (Array new: r - 1 withAll: 0)) ].
 
 		qr := a qrFactorizationWithPivoting.
-		self assert:
-			(a closeTo: qr first * (qr second inversePivotColumns: (qr at: 3))).
-		self assert: (qr first squared closeTo:
-				 (PMSymmetricMatrix identity: qr first numberOfColumns)).
-		2 to: qr second numberOfRows do: [ :r | 
-			self assert: (((qr second rowAt: r) first: r - 1) closeTo:
-					 (Array new: r - 1 withAll: 0)) ].
+		self assert: (a closeTo: qr first * (qr second inversePivotColumns: (qr at: 3))).
+		self assert: (qr first squared closeTo: (PMSymmetricMatrix identity: qr first numberOfColumns)).
+		2 to: qr second numberOfRows do: [ :r | self assert: (((qr second rowAt: r) first: r - 1) closeTo: (Array new: r - 1 withAll: 0)) ].
 
-		a := PMSymmetricMatrix new: 4 random: 10.0.
+		a := PMSymmetricMatrix new: 4 random: 10.0 generator: (Random seed: 42).
 		qr := a qrFactorization.
 		self assert: (a closeTo: qr first * qr second).
-		self assert: (qr first squared closeTo:
-				 (PMSymmetricMatrix identity: qr first numberOfColumns)).
-		2 to: qr second numberOfRows do: [ :r | 
-			self assert: (((qr second rowAt: r) first: r - 1) closeTo:
-					 (Array new: r - 1 withAll: 0)) ].
+		self assert: (qr first squared closeTo: (PMSymmetricMatrix identity: qr first numberOfColumns)).
+		2 to: qr second numberOfRows do: [ :r | self assert: (((qr second rowAt: r) first: r - 1) closeTo: (Array new: r - 1 withAll: 0)) ].
 
 		qr := a qrFactorizationWithPivoting.
-		self assert:
-			(a closeTo: qr first * (qr second inversePivotColumns: (qr at: 3))).
-		self assert: (qr first squared closeTo:
-				 (PMSymmetricMatrix identity: qr first numberOfColumns)).
-		2 to: qr second numberOfRows do: [ :r | 
-			self assert: (((qr second rowAt: r) first: r - 1) closeTo:
-					 (Array new: r - 1 withAll: 0)) ] ]
+		self assert: (a closeTo: qr first * (qr second inversePivotColumns: (qr at: 3))).
+		self assert: (qr first squared closeTo: (PMSymmetricMatrix identity: qr first numberOfColumns)).
+		2 to: qr second numberOfRows do: [ :r | self assert: (((qr second rowAt: r) first: r - 1) closeTo: (Array new: r - 1 withAll: 0)) ] ]
 ]
 
 { #category : #tests }
 PMQRTest >> testRank [
+
 	| random randomNumber matrix |
 	random := Random new.
-	
+
 	10 timesRepeat: [
-		matrix := PMMatrix rows: 5 columns: 7 random: 5.0.
+		matrix := PMMatrix
+			          rows: 5
+			          columns: 7
+			          random: 5.0
+			          generator: (Random seed: 42).
 		matrix rank = 5 ifTrue: [
 			randomNumber := random nextBetween: 0 and: 3.
 			matrix atRow: 2 put: (matrix rowAt: 1) + (randomNumber * (matrix rowAt: 3)).
-			
+
 			randomNumber := random nextBetween: 0 and: 3.
-			matrix atRow: 4 put: (0.5 + randomNumber) * (matrix rowAt: 5).
-			
+			matrix atRow: 4 put: 0.5 + randomNumber * (matrix rowAt: 5).
+
 			self assert: matrix rank equals: 3.
-			self assert: matrix transpose rank equals: 3 ] ].
+			self assert: matrix transpose rank equals: 3 ] ]
 ]
 
 { #category : #tests }
@@ -243,17 +246,14 @@ PMQRTest >> testSimpleQRDecompositionWithPivot [
 
 { #category : #tests }
 PMQRTest >> testVectorHouseholder [
-
 	"result is householdermatrix * v"
 
-	(2 to: 5) do: [ :i | 
+	(2 to: 5) do: [ :i |
 		| v h result |
-		(1 to: 9) do: [ :unimportant | 
-			v := PMVector new: i random: 5.8.
+		(1 to: 9) do: [ :unimportant |
+			v := PMVector new: i random: 5.8 generator: (Random seed: 42).
 			h := v householder.
-			result := (PMSymmetricMatrix identity: i)
-			          - ((h at: 1) * (h at: 2) tensorProduct: (h at: 2)) * v.
+			result := (PMSymmetricMatrix identity: i) - ((h at: 1) * (h at: 2) tensorProduct: (h at: 2)) * v.
 			self deny: (result first closeTo: 0).
-			result allButFirst do: [ :aNumber | 
-				self assert: (aNumber closeTo: 0) ] ] ]
+			result allButFirst do: [ :aNumber | self assert: (aNumber closeTo: 0) ] ] ]
 ]

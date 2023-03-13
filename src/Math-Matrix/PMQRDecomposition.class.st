@@ -22,7 +22,6 @@ PMQRDecomposition class >> of: matrix [
 
 { #category : #arithmetic }
 PMQRDecomposition >> decompose [
-
 	"
 The method appears to be using Householder reflection. There is a wiki page
 that describes the mechanics:
@@ -30,41 +29,31 @@ https://en.wikipedia.org/wiki/QR_decomposition#Using_Householder_reflections
 "
 
 	| i matrixOfMinor |
-	1 to: self numberOfColumns do: [ :col | 
+	1 to: self numberOfColumns do: [ :col |
 		| householderReflection householderMatrix householderVector columnVectorFromRMatrix |
 		columnVectorFromRMatrix := r columnVectorAt: col size: colSize.
-		householderReflection := self
-			                         householderReflectionOf:
-			                         columnVectorFromRMatrix
-			                         atColumnNumber: col.
+		householderReflection := self householderReflectionOf: columnVectorFromRMatrix atColumnNumber: col.
 		householderVector := householderReflection at: 1.
 		householderMatrix := householderReflection at: 2.
 		q := q * householderMatrix.
 		matrixOfMinor := r minor: col - 1 and: col - 1.
-		matrixOfMinor := matrixOfMinor
-		                 - ((householderVector at: 2) tensorProduct:
-				                  (householderVector at: 1)
-				                  * (householderVector at: 2) * matrixOfMinor).
-		matrixOfMinor rowsWithIndexDo: [ :aRow :index | 
-			aRow withIndexDo: [ :element :column | 
+		matrixOfMinor := matrixOfMinor - ((householderVector at: 2) tensorProduct: (householderVector at: 1) * (householderVector at: 2) * matrixOfMinor).
+		matrixOfMinor rowsWithIndexDo: [ :aRow :index |
+			aRow withIndexDo: [ :element :column |
 				| rowNumber columnNumber |
 				rowNumber := col + index - 1.
 				columnNumber := col + column - 1.
-				r
-					rowAt: rowNumber
-					columnAt: columnNumber
-					put: ((element closeTo: 0)
-							 ifTrue: [ 0 ]
-							 ifFalse: [ element ]) ] ] ].
+				r rowAt: rowNumber columnAt: columnNumber put: ((element closeTo: 0)
+						 ifTrue: [ 0 ]
+						 ifFalse: [ element ]) ] ] ].
 	i := 0.
-	[ (r rowAt: colSize) isZero ] whileTrue: [ 
+	[ (r rowAt: colSize) isZero ] whileTrue: [
 		i := i + 1.
 		colSize := colSize - 1 ].
-	i > 0 ifTrue: [ 
+	i > 0 ifTrue: [
 		r := self upperTriangularPartOf: r With: colSize.
 		i := q numberOfColumns - i.
-		q := PMMatrix rows:
-			     (q rowsCollect: [ :row | row copyFrom: 1 to: i ]) ].
+		q := PMMatrix rows: (q rowsCollect: [ :row | row copyFrom: 1 to: i ]) ].
 	^ Array with: q with: r
 ]
 

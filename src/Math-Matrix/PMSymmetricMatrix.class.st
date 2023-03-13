@@ -57,22 +57,26 @@ aBlock value: RowposRespectivelyColpos value: ColposRespectivelyRowpos"
 
 { #category : #'instance creation' }
 PMSymmetricMatrix class >> new: dim random: aMaxNumber [
+
+	^ self new: dim random: aMaxNumber generator: Random new
+]
+
+{ #category : #'instance creation' }
+PMSymmetricMatrix class >> new: dim random: aMaxNumber generator: generator [
 	"Answer a new symmetric matrix of the given dimensions filled with random numbers"
-	| matrix random aRow |
-	
+
+	| matrix aRow |
 	matrix := self new: dim.
-	random := Random new.
-	
-	1 to: dim do: [ :i |
-		matrix rowAt: 1 columnAt: i put: (random nextBetween: 0 and: aMaxNumber)].
-	
+
+	1 to: dim do: [ :i | matrix rowAt: 1 columnAt: i put: (generator nextBetween: 0 and: aMaxNumber) ].
+
 	2 to: dim do: [ :j |
-		aRow :=PMVector new: dim .
-		
+		aRow := PMVector new: dim.
+
 		1 to: j - 1 do: [ :i | aRow at: i put: (matrix rowAt: i columnAt: j) ].
-		j to: dim do: [ :i | aRow at: i put: (random nextBetween: 0 and: aMaxNumber) ]. 
-		(matrix rows) at: j put: aRow ]  .    
-	^ matrix 
+		j to: dim do: [ :i | aRow at: i put: (generator nextBetween: 0 and: aMaxNumber) ].
+		matrix rows at: j put: aRow ].
+	^ matrix
 ]
 
 { #category : #'instance creation' }

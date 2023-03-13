@@ -8,7 +8,11 @@ Class {
 PMRestTest >> testEqualsTo [
 
 	| a b |
-	a := PMMatrix rows: 5 columns: 7 random: 5.0.
+	a := PMMatrix
+		     rows: 5
+		     columns: 7
+		     random: 5.0
+		     generator: (Random seed: 42).
 	b := a deepCopy.
 	self assert: (a closeTo: b).
 	b rowAt: 4 columnAt: 6 put: 6.
@@ -17,12 +21,10 @@ PMRestTest >> testEqualsTo [
 
 { #category : #tests }
 PMRestTest >> testNewRandom [
-|a |
-a:=PMSymmetricMatrix  new:7 random: 5.0 .
-a:=PMMatrix rows: a rows.
-self assert: (a isSymmetric ).
 
-
+	| a |
+	a := PMSymmetricMatrix new: 7 random: 5.0 generator: (Random seed: 42).
+	self assert: a isSymmetric
 ]
 
 { #category : #tests }
