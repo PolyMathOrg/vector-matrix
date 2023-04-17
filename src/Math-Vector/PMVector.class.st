@@ -182,6 +182,13 @@ PMVector >> cumsum [
 ]
 
 { #category : #operation }
+PMVector >> firstNorm [
+	"Answer the first norm of the receiver."
+
+	^ self inject: 0 into: [ :accu :e | accu + e abs ]
+]
+
+{ #category : #operation }
 PMVector >> hadamardProduct: aVector [
 	"Answers the elementwise product of the receiver with aVector."
 
@@ -252,10 +259,12 @@ PMVector >> normalized [
 { #category : #operation }
 PMVector >> productWithVector: aVector [
 	"Answers the scalar product of aVector with the receiver."
+
 	| n |
 	n := 0.
-	^self inject: 0
-			into: [ :sum :each | n := n + 1. (aVector at: n) * each + sum]
+	^ self inject: 0 into: [ :sum :each |
+		n := n + 1.
+		(aVector at: n) * each + sum ]
 ]
 
 { #category : #operation }

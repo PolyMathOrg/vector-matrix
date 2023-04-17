@@ -218,6 +218,20 @@ PMVectorTest >> testVectorCumulativeSum [
 ]
 
 { #category : #tests }
+PMVectorTest >> testVectorFirstNorm [
+
+	| v1 v2 v3 |
+	v1 := #( 1 0 ) asPMVector.
+	self assert: v1 firstNorm equals: 1.
+	v2 := #( 0 1 ) asPMVector.
+	self assert: v2 firstNorm equals: 1.
+	v3 := #( 1 1 ) asPMVector.
+	self assert: v3 firstNorm equals: 2.
+
+	self assert: (v3 + v1) firstNorm equals: 3
+]
+
+{ #category : #tests }
 PMVectorTest >> testVectorGreater [
 
 | u w |
