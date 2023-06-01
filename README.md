@@ -1,5 +1,5 @@
 <p align="center"><img alt="PolyMath" src="https://raw.githubusercontent.com/PolyMathOrg/PolyMath/master/assets/logos/logo.png" style="width: 25%; height: 25%">
-<h1 align="center">[Vector Matrix]</h1>
+<h1 align="center">[PolyMath: Vector Matrix]</h1>
   <p align="center">
     Scientific Computing with Pharo
     <br>
