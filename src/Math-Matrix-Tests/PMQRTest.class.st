@@ -29,39 +29,6 @@ PMQRTest >> assert: inverse isMoorePenroseInverseOf: aMatrix [
 ]
 
 { #category : 'tests' }
-PMQRTest >> testDecompositionOfMatrixCausingErraticFailure [
-
-	| a qrDecomposition matricesAndPivot q r expectedMatrix pivot |
-	a := PMSymmetricMatrix rows:
-		     #( #( 0.41929313699681925 0.05975350554089691
-		           0.2771676258543356 0.35628773381760703 )
-		        #( 0.05975350554089691 0.12794227252152854
-		           0.3257742693302102 0.28814463284245906 )
-		        #( 0.2771676258543356 0.3257742693302102 0.8468441832097453
-		           0.9101872061892353 )
-		        #( 0.35628773381760703 0.28814463284245906
-		           0.9101872061892353 0.5163744224777326 ) ).
-
-	qrDecomposition := PMQRDecomposition of: a.
-	matricesAndPivot := qrDecomposition decomposeWithPivot.
-
-	expectedMatrix := PMMatrix rows:
-		                  #( #( 0.2771676258543356 0.35628773381760703
-		                        0.41929313699681925 0.05975350554089691 )
-		                     #( 0.3257742693302102 0.28814463284245906
-		                        0.05975350554089691 0.12794227252152854 )
-		                     #( 0.8468441832097453 0.9101872061892353
-		                        0.2771676258543356 0.3257742693302102 )
-		                     #( 0.9101872061892353 0.5163744224777326
-		                        0.35628773381760703 0.28814463284245906 ) ).
-	q := matricesAndPivot at: 1.
-	r := matricesAndPivot at: 2.
-	pivot := matricesAndPivot at: 3.
-	self assert: q * r closeTo: expectedMatrix.
-	self assert: pivot equals: #( 3 4 3 nil )
-]
-
-{ #category : 'tests' }
 PMQRTest >> testHorizontalRectangularMatrixCannotBeDecomposed [
 
 	| horizontalRectangularMatrix |
@@ -152,6 +119,51 @@ PMQRTest >> testOrthogonalize [
 ]
 
 { #category : 'tests' }
+PMQRTest >> testQRDecompositionOnRankDeficientMatrix [
+
+	| a qrDecomposition reconstruction |
+	a := PMMatrix rows: {
+			     { 1. 2. 3 }.
+			     { 4. 5. 6 }.
+			     { 7. 8. 9 } }.
+
+	qrDecomposition := PMQRDecomposition of: a.
+	qrDecomposition decompose.
+
+	self assert: qrDecomposition q rank equals: a rank.
+	self assert: qrDecomposition r rank equals: a rank.
+
+	reconstruction := qrDecomposition q * qrDecomposition r.
+	self assert: reconstruction closeTo: a
+]
+
+{ #category : 'tests' }
+PMQRTest >> testQRDecompositionWithPivotOnRankDeficientMatrix [
+
+	| a qrDecomposition expectedQR expectedPivot reconstruction |
+	a := PMMatrix rows: {
+			     { 1. 2. 3 }.
+			     { 4. 5. 6 }.
+			     { 7. 8. 9 } }.
+	expectedQR := PMMatrix rows: {
+			              { 3. 1. 2 }.
+			              { 6. 4. 5 }.
+			              { 9. 7. 8 } }.
+	expectedPivot := #( 3 1 2 ).
+
+	qrDecomposition := PMQRDecomposition of: a.
+	qrDecomposition decomposeWithPivot.
+
+	self assert: qrDecomposition q rank equals: a rank.
+	self assert: qrDecomposition r rank equals: a rank.
+	self assert: qrDecomposition q * qrDecomposition r closeTo: expectedQR.
+	self assert: qrDecomposition pivot equals: expectedPivot.
+
+	reconstruction := qrDecomposition q * qrDecomposition r * qrDecomposition permutationMatrixFromPivot inverse.
+	self assert: reconstruction closeTo: a
+]
+
+{ #category : 'tests' }
 PMQRTest >> testQRFactorization [
 
 	| a qr |
@@ -225,24 +237,25 @@ PMQRTest >> testSimpleQRDecomposition [
 { #category : 'tests' }
 PMQRTest >> testSimpleQRDecompositionWithPivot [
 
-	| a qrDecomposition decomposition expected |
-	a := PMMatrix rows: { 
+	| a qrDecomposition expectedQR expectedPivot reconstruction |
+	a := PMMatrix rows: {
 			     { 12. -51. 4 }.
 			     { 6. 167. -68 }.
 			     { -4. 24. -41 } }.
+	expectedQR := PMMatrix rows: {
+			              { -51. 4. 12 }.
+			              { 167. -68. 6 }.
+			              { 24. -41. -4 } }.
+	expectedPivot := #( 2 3 1 ).
 
 	qrDecomposition := PMQRDecomposition of: a.
+	qrDecomposition decomposeWithPivot.
 
-	decomposition := qrDecomposition decomposeWithPivot.
-	decomposition first * decomposition second.
+	self assert: qrDecomposition q * qrDecomposition r closeTo: expectedQR.
+	self assert: qrDecomposition pivot equals: expectedPivot.
 
-	expected := PMMatrix rows: { 
-			            { -51. 4. 12 }.
-			            { 167. -68. 6 }.
-			            { 24. -41. -4 } }.
-	self
-		assert: decomposition first * decomposition second
-		closeTo: expected
+	reconstruction := qrDecomposition q * qrDecomposition r * qrDecomposition permutationMatrixFromPivot inverse.
+	self assert: reconstruction closeTo: a
 ]
 
 { #category : 'tests' }
